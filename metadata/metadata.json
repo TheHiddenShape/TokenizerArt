@@ -1,0 +1,15 @@
+{
+  "name": "RiddlerNFT #1",
+  "description": "A unique NFT from the Riddler collection",
+  "image": "ipfs://Qmbafybeieukjol6kj4c4qxsh6xgrpxafgbiwwgye3dxhn3xowojumt2es3v4/riddler.png",
+  "attributes": [
+    {
+      "trait_type": "Collection",
+      "value": "Riddler"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Genesis"
+    }
+  ]
+}
