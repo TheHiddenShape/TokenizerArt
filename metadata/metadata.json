@@ -1,7 +1,8 @@
 {
   "name": "RiddlerNFT #1",
   "description": "A unique NFT from the Riddler collection",
-  "image": "ipfs://Qmbafybeieukjol6kj4c4qxsh6xgrpxafgbiwwgye3dxhn3xowojumt2es3v4/riddler.png",
+  "image": "ipfs://bafybeieukjol6kj4c4qxsh6xgrpxafgbiwwgye3dxhn3xowojumt2es3v4",
+  "image_url": "https://ipfs.io/ipfs/bafybeieukjol6kj4c4qxsh6xgrpxafgbiwwgye3dxhn3xowojumt2es3v4",
   "attributes": [
     {
       "trait_type": "Collection",
