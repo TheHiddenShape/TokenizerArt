@@ -9,7 +9,10 @@ ERC-721 is a technical standard for creating non-fungible token (NFT) smart cont
 
 This implementation contains the following functionalities:
 - Standard ERC-721 token transfers, approvals, and ownership queries
-- Owner-controlled minting with automatic token ID assignment
+- Owner-controlled minting with automatic token ID assignment and metadata URI support
+- Token burning functionality through ERC721Burnable extension
+- Metadata storage and update capability via ERC721URIStorage extension
+- Maximum supply cap of 100 tokens
 - Access control through the Ownable pattern
 
 > The maximum size for a deployed smart contract on Ethereum is 24 KB (24,576 bytes), introduced with EIP-170.
@@ -19,19 +22,50 @@ This implementation contains the following functionalities:
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title RiddlerNFT
-/// @notice Minimal ERC-721 NFT contract
-contract RiddlerNFT is ERC721, Ownable {
-    uint256 private _nextTokenId;
+/// @notice Minimal ERC-721 NFT contract with metadata support
+contract RiddlerNFT is ERC721, Ownable, ERC721Burnable, ERC721URIStorage {
+    uint256 private _nextTokenId = 1;
+    uint256 public constant MAX_SUPPLY = 100;
 
-    constructor() ERC721("RiddlerNFT", "RNFT") Ownable(msg.sender) {}
+    constructor(address initialOwner) ERC721("RiddlerNFT", "RNFT") Ownable(initialOwner) {
+    }
 
-    /// @notice Mint a new NFT
+    /// @notice Mint a new NFT with metadata URI
     /// @param to Address that will receive the NFT
-    function mint(address to) external onlyOwner {
-        _safeMint(to, _nextTokenId++);
+    /// @param uri Metadata URI for the token
+    function safeMint(address to, string memory uri) external onlyOwner {
+        require(_nextTokenId <= MAX_SUPPLY, "Max supply reached");
+        uint256 tokenId = _nextTokenId++;
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, uri);
+    }
+
+    /// @notice Update the metadata URI of an existing token
+    /// @param tokenId Token ID to update
+    /// @param uri New metadata URI
+    function updateTokenURI(uint256 tokenId, string memory uri) external onlyOwner {
+        _setTokenURI(tokenId, uri);
+    }
+
+    /// @notice Get the total number of minted tokens
+    /// @return Total supply of tokens
+    function totalSupply() external view returns (uint256) {
+        return _nextTokenId - 1;
+    }
+
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory)
+    {
+        return super.tokenURI(tokenId);
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721URIStorage) returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 }
 ```
