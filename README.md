@@ -12,8 +12,25 @@ This implementation contains the following functionalities:
 - Owner-controlled minting with automatic token ID assignment and metadata URI support
 - Token burning functionality through ERC721Burnable extension
 - Metadata storage and update capability via ERC721URIStorage extension
-- Maximum supply cap of 100 tokens
-- Access control through the Ownable pattern
+
+## NFT Metadata & IPFS
+
+NFT metadata follows the ERC-721 standard and is hosted on IPFS (InterPlanetary File System) for decentralized, immutable storage. Files are uploaded to [Pinata](https://pinata.cloud/), which provides persistent pinning and a free tier.
+
+**Metadata structure:**
+```json
+{
+  "name": "RiddlerNFT #1",
+  "description": "A unique NFT from the Riddler collection",
+  "image": "ipfs://bafybeieukjol6kj4c4qxsh6xgrpxafgbiwwgye3dxhn3xowojumt2es3v4",
+  "attributes": [{"trait_type": "Collection", "value": "Riddler"}]
+}
+```
+
+**Usage in contract:**
+```solidity
+safeMint(to, "ipfs://QmYourMetadataHash/metadata.json");
+```
 
 > The maximum size for a deployed smart contract on Ethereum is 24 KB (24,576 bytes), introduced with EIP-170.
 
@@ -36,8 +53,6 @@ contract RiddlerNFT is ERC721, Ownable, ERC721Burnable, ERC721URIStorage {
     }
 
     /// @notice Mint a new NFT with metadata URI
-    /// @param to Address that will receive the NFT
-    /// @param uri Metadata URI for the token
     function safeMint(address to, string memory uri) external onlyOwner {
         require(_nextTokenId <= MAX_SUPPLY, "Max supply reached");
         uint256 tokenId = _nextTokenId++;
@@ -46,14 +61,11 @@ contract RiddlerNFT is ERC721, Ownable, ERC721Burnable, ERC721URIStorage {
     }
 
     /// @notice Update the metadata URI of an existing token
-    /// @param tokenId Token ID to update
-    /// @param uri New metadata URI
     function updateTokenURI(uint256 tokenId, string memory uri) external onlyOwner {
         _setTokenURI(tokenId, uri);
     }
 
     /// @notice Get the total number of minted tokens
-    /// @return Total supply of tokens
     function totalSupply() external view returns (uint256) {
         return _nextTokenId - 1;
     }
