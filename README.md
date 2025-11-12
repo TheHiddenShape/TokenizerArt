@@ -79,7 +79,7 @@ NFT metadata follows the ERC-721 standard and is hosted on IPFS (InterPlanetary 
 
 **Usage in contract:**
 ```solidity
-safeMint(to, "ipfs://QmYourMetadataHash/metadata.json");
+safeMint(OxADDR, "ipfs://CID_METADATAHASH");
 ```
 
 ## Prerequisites
